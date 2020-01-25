@@ -45,9 +45,9 @@ def extract_data(file):
 def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = None, params = None ):
     
     if ( (x is not None) and (y is not None) and (alpha is not None) and (lamb is not None) ):
-        if(nepoch == None):
+        if(nepoch is None):
             nepoch = 10
-        if(epsilon == None):
+        if(epsilon is None):
             #setting error bout to 10% if not there
             epsilon = 0.00001
 
@@ -182,14 +182,14 @@ def update_weights(model, inputs, y_hat, y, learning_rate, regularization_weight
 
 #in_features, in_admission = extract_data('Admission_predict.csv')
 
-in_features, in_admission = extract_data('Admission_Predict.csv')
-test_features, test_admission = extract_data('test.csv')
+# in_features, in_admission = extract_data('Admission_Predict.csv')
+# test_features, test_admission = extract_data('test.csv')
 
-model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
-print("Model returned: ", model)
-print("\n")
-error = SGDSolver(in_features, in_admission, params = model)
-print("Model error: ", error)
-print("\n")
-output = SGDSolver(test_features, params = model)
-print("Admission chances for data ", output)
+# model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
+# print("Model returned: ", model)
+# print("\n")
+# error = SGDSolver(in_features, in_admission, params = model)
+# print("Model error: ", error)
+# print("\n")
+# output = SGDSolver(test_features, params = model)
+# print("Admission chances for data ", output)
