@@ -44,7 +44,7 @@ def extract_data(file):
 #params = numpy arr of size [(k+1) x 1], that represents the current paramater values W_0, ..., W_k-1,b
 def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = None, params = None ):
     
-    if ( (x != None) and (y != None) and (alpha != None) and (lamb != None) ):
+    if ( (x is not None) and (y is not None) and (alpha != None) and (lamb != None) ):
         if(nepoch == None):
             nepoch = 10
         if(epsilon == None):
@@ -106,7 +106,7 @@ def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = N
                     global ideal_lambda
                     ideal_lambda = lam
         return(ideal_model)
-    elif((x!=None) and (y!=None) and (params != None)):
+    elif((x is not None) and (y is not None) and (params is not None)):
         #Validation:
         total_error = 0;
         for i in range(len(x)):
