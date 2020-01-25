@@ -44,7 +44,7 @@ def extract_data(file):
 #params = numpy arr of size [(k+1) x 1], that represents the current paramater values W_0, ..., W_k-1,b
 def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = None, params = None ):
     
-    if ( (x is not None) and (y is not None) and (alpha != None) and (lamb != None) ):
+    if ( (x is not None) and (y is not None) and (alpha is not None) and (lamb is not None) ):
         if(nepoch == None):
             nepoch = 10
         if(epsilon == None):
@@ -52,7 +52,7 @@ def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = N
             epsilon = 0.00001
 
         #Training:
-        if(params == None):
+        if(params is None):
             initial_model = initial_values()
         else:
             initial_model = params
@@ -181,6 +181,9 @@ def update_weights(model, inputs, y_hat, y, learning_rate, regularization_weight
 # print( "\n\nError during test was: ", testing_error )
 
 #in_features, in_admission = extract_data('Admission_predict.csv')
+
+# in_features, in_admission = extract_data('Admission_Predict.csv')
+# test_features, test_admission = extract_data('test.csv')
 
 # model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
 # print("Model returned: ", model)
