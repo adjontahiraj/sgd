@@ -153,8 +153,8 @@ def update_weights(model, inputs, y_hat, y, learning_rate, regularization_weight
 
 
 # #for testing purposes
-in_features, in_admission = extract_data('Admission_Predict.csv')
-test_features, test_admission = extract_data('test.csv')
+# in_features, in_admission = extract_data('Admission_Predict.csv')
+# test_features, test_admission = extract_data('test.csv')
 # err, model = SGDSolver(in_features, in_admission)
 # # print("\n\n This is the best current model: \n")
 # # print(model)
@@ -180,13 +180,13 @@ test_features, test_admission = extract_data('test.csv')
 
 # print( "\n\nError during test was: ", testing_error )
 
-# in_features, in_admission = extract_data('Admission_predict.csv')
+#in_features, in_admission = extract_data('Admission_predict.csv')
 
-model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
-print("Model returned: ", model)
-print("\n")
-error = SGDSolver(in_features, in_admission, params = model)
-print("Model error: ", error)
-print("\n")
-output = SGDSolver(test_features, params = model)
-print("Admission chances for data ", output)
+# model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
+# print("Model returned: ", model)
+# print("\n")
+# error = SGDSolver(in_features, in_admission, params = model)
+# print("Model error: ", error)
+# print("\n")
+# output = SGDSolver(test_features, params = model)
+# print("Admission chances for data ", output)
