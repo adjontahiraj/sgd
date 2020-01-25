@@ -1,3 +1,4 @@
+#Adjon Tahiraj 4487591
 import numpy as np
 import random
 import csv
@@ -41,16 +42,20 @@ def extract_data(file):
 #epsilon = error bound to stop iteration prematurely if e' is less than the given bound
 #params = numpy arr of size [(k+1) x 1], that represents the current paramater values W_0, ..., W_k-1,b
 def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = None, params = None ):
-    if ( (x != None) and (y != None) and (alpha != None) ):
+    
+    if ( (x != None) and (y != None) and (alpha != None) and (lamb != None) ):
+        if(nepoch == None):
+            nepoch = 10
         if(epsilon == None):
             #setting error bout to 10% if not there
-            epsilon = 0.1
+            epsilon = 0.00001
 
         #Training:
         if(params == None):
             initial_model = initial_values()
         else:
             initial_model = params
+        
         initial_error = 100.0
         lowest_error = 100.0
         best_model = initial_model
@@ -58,7 +63,8 @@ def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = N
         #lamb = [0.0001, 0.0010]
         #alph = 0.05
         #lam = 0.001
-        #nepoch = 5
+
+        epsilon = 0.00001
 
         #we will loop through 10 different alphas and for each alpha loop through 10 different lambdas to compute 2D grid search
         for alph in np.arange(alpha[0], alpha[1], ((alpha[1]-alpha[0])/20)):
@@ -76,39 +82,47 @@ def SGDSolver(x, y = None, alpha = None, lamb = None, nepoch = None, epsilon = N
                         y_hat = compute_y_hat(model, x[feature_set]);
                         #computing the loss with current model
                         loss = compute_loss(y_hat, y[feature_set], lam, model)
-                        error+=loss
+                        if(loss < epsilon):
+                            break
                         #print("Loss: ",loss,"\n")
 
                         #updating weights using SGD
                         model = update_weights(model, x[feature_set], y_hat, y[feature_set], alph, lam) 
-                        
-            #print("\n\n Validation: \n")
 
-            for feature_set in range(len(x)):
-                predicted_out = compute_y_hat(model, x[feature_set])
-                error += abs(predicted_out - y[feature_set])
-            error = error/len(x)
-            if error <= lowest_error:
-                lowest_error = error;
-                best_model = model;
-                global ideal_model
-                ideal_model = best_model
-                global ideal_alpha 
-                ideal_alpha= alph
-                global ideal_lambda
-                ideal_lambda = lam
-        return(lowest_error, ideal_model)
-    else:
-        #print("\n\nTesting: \n")
-
-        admission_out = np.zeros(len(x))
+                #checking the error here so I can use the data for 
+                for feature_set in range(len(x)):
+                    predicted_out = compute_y_hat(model, x[feature_set])
+                    error += abs(predicted_out - y[feature_set])
+                error = error/len(x)
+                #saving the best data to use
+                if error <= lowest_error:
+                    lowest_error = error;
+                    best_model = model;
+                    global ideal_model
+                    ideal_model = best_model
+                    global ideal_alpha 
+                    ideal_alpha= alph
+                    global ideal_lambda
+                    ideal_lambda = lam
+        return(ideal_model)
+    elif((x!=None) and (y!=None) and (params != None)):
+        #Validation:
+        total_error = 0;
         for i in range(len(x)):
-            admission_out[i] = params[-1]
+            prediction = compute_y_hat(params, x[i])
+            total_error += abs(prediction - y[i])
+        avg_err = total_error/len(x)
+        return(avg_err)
+    else:
+        #Testing
+        admission_out = np.zeros(len(x))
+        prediction_out = 0
+        for i in range(len(x)):
+            prediction_out = params[-1]
             for param in range(7):
-                admission_out[i] += x[i][param] * params[param]
-        
+                prediction_out += ((x[i][param]) * params[param])
+            admission_out[i] = prediction_out
         return(admission_out)
-
 
 
 #function to compute predicted output with given model
@@ -137,30 +151,41 @@ def update_weights(model, inputs, y_hat, y, learning_rate, regularization_weight
     return new_model
 
 
-#for testing purposes
-in_features, in_admission = extract_data('Admission_predict.csv')
-test_features, test_admission = extract_data('test.csv')
-err, model = SGDSolver(in_features, in_admission)
-# print("\n\n This is the best current model: \n")
-# print(model)
-# print("\n\nThis is the ideal model: \n")
-# print(ideal_model)
-print("\n\n This is the error of the best current model: ")
-print(err)
-print("\n\n Alpha: ", ideal_alpha, " Lambda: ", ideal_lambda, "\n")
+# #for testing purposes
+# in_features, in_admission = extract_data('Admission_predict.csv')
+# test_features, test_admission = extract_data('test.csv')
+# err, model = SGDSolver(in_features, in_admission)
+# # print("\n\n This is the best current model: \n")
+# # print(model)
+# # print("\n\nThis is the ideal model: \n")
+# # print(ideal_model)
+# print("\n\n This is the error of the best current model: ")
+# print(err)
+# print("\n\n Alpha: ", ideal_alpha, " Lambda: ", ideal_lambda, "\n")
 
 
-test = SGDSolver(test_features, params = ideal_model)
-# print( "\nThese are the predicted admissions for test input: \n")
-# print(test)
-# print( "\nThese are the actual admissions for the test input: \n")
+# test = SGDSolver(test_features, params = ideal_model)
+# # print( "\nThese are the predicted admissions for test input: \n")
+# # print(test)
+# # print( "\nThese are the actual admissions for the test input: \n")
 
-#manual error calculation
-test_admission = np.asarray(test_admission, dtype=np.float32)
-# print(test_admission)
-testing_error = 0
-for i in range(len(test)):
-    testing_error += abs(test[i] - test_admission[i])
-testing_error = testing_error/len(test)
+# #manual error calculation
+# test_admission = np.asarray(test_admission, dtype=np.float32)
+# # print(test_admission)
+# testing_error = 0
+# for i in range(len(test)):
+#     testing_error += abs(test[i] - test_admission[i])
+# testing_error = testing_error/len(test)
 
-print( "\n\nError during test was: ", testing_error )
+# print( "\n\nError during test was: ", testing_error )
+
+# in_features, in_admission = extract_data('Admission_predict.csv')
+
+# model = SGDSolver(in_features, in_admission, [0.001, 0.01], [0.0001, 0.001], 10, 0.00001)
+# print("Model returned: ", model)
+# print("\n")
+# error = SGDSolver(in_features, in_admission, params = model)
+# print("Model error: ", error)
+# print("\n")
+# output = SGDSolver(test_features, params = model)
+# print("Admission chances for data ", output)
